@@ -83,7 +83,7 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
-    super(new Configuration());
+    super(new Configuration());//创建对象时会初始化一些别名
     ErrorContext.instance().resource("SQL Mapper Configuration");
     this.configuration.setVariables(props);
     this.parsed = false;
@@ -91,6 +91,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     this.parser = parser;
   }
 
+  //解析config配置文件到一个configuration对象
   public Configuration parse() {
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
@@ -102,6 +103,7 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   private void parseConfiguration(XNode root) {
     try {
+    	//root  --> <configuration>
       //issue #117 read properties first
       propertiesElement(root.evalNode("properties"));
       Properties settings = settingsAsProperties(root.evalNode("settings"));
@@ -151,6 +153,8 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  //类型别名解析，没有设置alias属性并且类上没有配置@Alias注解时，使用type属性的类名，全部转小写(不是首字母转小写)作为key，
+  //class作为value保存在TYPE_ALIASES中（map）
   private void typeAliasesElement(XNode parent) {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
@@ -271,9 +275,9 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void environmentsElement(XNode context) throws Exception {
     if (context != null) {
       if (environment == null) {
-        environment = context.getStringAttribute("default");
+        environment = context.getStringAttribute("default");//获取指定的环境id名称
       }
-      for (XNode child : context.getChildren()) {
+      for (XNode child : context.getChildren()) {//遍历所有的环境，直到匹配到设置的名称为止
         String id = child.getStringAttribute("id");
         if (isSpecifiedEnvironment(id)) {
           TransactionFactory txFactory = transactionManagerElement(child.evalNode("transactionManager"));
@@ -282,6 +286,7 @@ public class XMLConfigBuilder extends BaseBuilder {
           Environment.Builder environmentBuilder = new Environment.Builder(id)
               .transactionFactory(txFactory)
               .dataSource(dataSource);
+          //environmentBuilder.build()获取了一个environment，里面封装了PooledDataSource和JdbcTransactionFactory
           configuration.setEnvironment(environmentBuilder.build());
         }
       }
@@ -359,7 +364,7 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
-        if ("package".equals(child.getName())) {
+        if ("package".equals(child.getName())) {//如果mapper配置的是package，则在这里解析
           String mapperPackage = child.getStringAttribute("name");
           configuration.addMappers(mapperPackage);
         } else {
@@ -370,7 +375,7 @@ public class XMLConfigBuilder extends BaseBuilder {
             ErrorContext.instance().resource(resource);
             InputStream inputStream = Resources.getResourceAsStream(resource);
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
-            mapperParser.parse();
+            mapperParser.parse();//解析Mapper的核心方法
           } else if (resource == null && url != null && mapperClass == null) {
             ErrorContext.instance().resource(url);
             InputStream inputStream = Resources.getUrlAsStream(url);

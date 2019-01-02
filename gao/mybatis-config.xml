@@ -2,6 +2,27 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+
+	<properties resource="abc.properties">
+		<property name="proName1" value="proValue1" />
+		<property name="proName2" value="proValue2" />
+	</properties>
+	
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="false" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="com.gao.model.Order" />
+		<typeAlias type="com.gao.model.OrderDO" />
+		<typeAlias type="com.gao.model.NewOrderDO" />
+		<package name="com.gao.entity" />
+	</typeAliases>
+
+
+
+
 	<environments default="development">
 		<environment id="development">
 			<transactionManager type="JDBC" />
@@ -14,8 +35,11 @@
 			</dataSource>
 		</environment>
 	</environments>
+
 	<mappers>
 		<!--使用注解的方式 -->
 		<mapper resource="com/gao/mapper/UserMapper.xml" />
+		<package name=""/>
 	</mappers>
+
 </configuration>

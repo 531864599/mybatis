@@ -122,7 +122,7 @@ public class XPathParser {
 
   public XPathParser(InputStream inputStream, boolean validation, Properties variables, EntityResolver entityResolver) {
     commonConstructor(validation, variables, entityResolver);
-    this.document = createDocument(new InputSource(inputStream));
+    this.document = createDocument(new InputSource(inputStream));//解析mybatis-config文件到一个document
   }
 
   public XPathParser(Document document, boolean validation, Properties variables, EntityResolver entityResolver) {
@@ -206,6 +206,7 @@ public class XPathParser {
   }
 
   public XNode evalNode(String expression) {
+	  //解析出configuration节点
     return evalNode(document, expression);
   }
 

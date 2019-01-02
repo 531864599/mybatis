@@ -96,6 +96,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  */
 public class Configuration {
 
+	//里面封装了JdbcTransactionFactory和dataSource
   protected Environment environment;
 
   protected boolean safeRowBoundsEnabled;
@@ -122,7 +123,7 @@ public class Configuration {
   protected AutoMappingBehavior autoMappingBehavior = AutoMappingBehavior.PARTIAL;
   protected AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior = AutoMappingUnknownColumnBehavior.NONE;
 
-  protected Properties variables = new Properties();
+  protected Properties variables = new Properties();//保存的是mybatis-config文件中配置的property以及properties标签上的resource或者url
   protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
   protected ObjectFactory objectFactory = new DefaultObjectFactory();
   protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
@@ -172,6 +173,7 @@ public class Configuration {
   }
 
   public Configuration() {
+	//typeAliasRegistry实例化的时候已经对java的基本数据及其数组做了别名注册
     typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
     typeAliasRegistry.registerAlias("MANAGED", ManagedTransactionFactory.class);
 
